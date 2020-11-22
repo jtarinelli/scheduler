@@ -1,2 +1,2 @@
-var title = document.getElementsByTagName("h1")[0];
-title.innerText = "wow! so cool!";
+var h1 = document.getElementsByTagName("h1");
+h1[0].innerText = "wow! so cool!";
