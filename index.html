@@ -14,17 +14,20 @@ start off with being able to add 3 jobs into a form, print out results in text f
 		<script src="script.js"></script>
 		
 		<h1>wow!</h1>
-		<div>
+		<div id="input">
 			<form>
 				<div>
 					<p>Job 1</p>
-					<label>Start time</label>
-					<input type="text">
-					<label>Job length</label>
-					<input type="text">
+					<label for="start-1">Start time</label>
+					<input type="text" id="start-1">
+					<label for="length-1">Job length</label>
+					<input type="text" id="length-1">
 				</div>
-				<input type="submit"> <!-- prob will have to deal with default submit behavior somehow-->
+				<input type="button" value="Go!" onclick="submitButton()"> <!-- prob will have to deal with default submit behavior somehow-->
 			</form>
+		</div>
+		
+		<div id="output">
 		</div>
 		
 		<!-- Javascript functions to call once the html has been loaded -->

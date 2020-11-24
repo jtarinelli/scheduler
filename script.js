@@ -1,11 +1,12 @@
-<<<<<<< HEAD
-var changeTitle = function () {
+function changeTitle () {
 	var title = document.getElementsByTagName("h1")[0];
 	title.innerText = "wow! so cool!";
 }
-=======
-console.log("aaaa");
-var h1 = document.getElementsByTagName("h1");
-h1[0].innerText = "wow! so cool!";
 
->>>>>>> f1536b78d6d0f524f81c9080b71c918affef8b62
+function submitButton() {
+	console.log("submit button pressed");
+	var start1 = document.getElementById("start-1").value;
+	var length1 = document.getElementById("length-1").value;
+	console.log("job 1: start: " + start1 + " length: " + length1);
+}
+
