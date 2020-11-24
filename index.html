@@ -5,13 +5,15 @@ start off with being able to add 3 jobs into a form, print out results in text f
 <html lang="en">
 
 	<head>
-		<script type="text/javascript" src="script.js"></script>
 		<title>wow!</title>
 	</head>
 
 	<body>
-		<h1>wow!</h1>
+		<!-- Javascript files to include -->
 		<noscript>You need Javascript :(</noscript>
+		<script src="script.js"></script>
+		
+		<h1>wow!</h1>
 		<div>
 			<form>
 				<div>
@@ -24,6 +26,9 @@ start off with being able to add 3 jobs into a form, print out results in text f
 				<input type="submit"> <!-- prob will have to deal with default submit behavior somehow-->
 			</form>
 		</div>
+		
+		<!-- Javascript functions to call once the html has been loaded -->
+		<script type="text/javascript">changeTitle();</script>
 	</body>
 	
 </html>
