@@ -1,7 +1,7 @@
 var numJobs = 1;
 var jobs = {}; 
 
-function changeTitle () {
+function changeTitle() {
 	var title = document.getElementsByTagName("h1")[0];
 	title.innerText = "Scheduler wow!";
 }
@@ -50,7 +50,7 @@ function submitButton() {
 	FIFO(jobs);
 }
 
-// reads in inputs from the form and returns a list of job objects
+// reads in input from the form and returns a list of job objects
 function readInJobs() {
 	var jobsList = document.getElementById("jobs");
 	var jobs = []
