@@ -42,6 +42,7 @@ function resetJob(job) {
 	job.children[4].value = 0;
 }
 
+// runs when submit/go button is clicked
 function submitButton() {
 	console.log("submit button pressed");
 	jobs = readInJobs();
@@ -56,8 +57,8 @@ function readInJobs() {
 	
 	for(job of jobsList.children) {
 		var name = job.children[0].innerText;
-		var start = job.children[2].value;
-		var length = job.children[4].value;
+		var start = Number(job.children[2].value);
+		var length = Number(job.children[4].value);
 		jobs.push({
 			name: name,
 			start: start,
@@ -72,7 +73,7 @@ function FIFO(jobs) {
 	var time = 0;
 	for (job of jobs) {
 		console.log(job.name + " runs at time " + time);
-		time += job.length; // currently treated as a string not a number
+		time += job.length;
 	}
 	console.log("All jobs complete at time " + time);
 }
