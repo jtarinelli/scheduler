@@ -16,6 +16,15 @@ function addJob() {
 	jobsList.appendChild(newJob);
 }
 
+function removeJob(number) {
+	var jobsList = document.getElementById("jobs");
+	jobsList.removeChild(jobsList.children[number-1]);
+	for(i = number-1; i < jobsList.childElementCount; i++) {
+		changeJobNumber(jobsList.children[i], i+1);
+	}
+	numJobs--;
+}
+
 // updates an existing job to change all references to its number
 function changeJobNumber(job, number) {
 	job.id = "job-" + number;
@@ -23,7 +32,8 @@ function changeJobNumber(job, number) {
 	job.children[2].id = "start-" + number;
 	job.children[1].setAttribute("for","start-" + number);
 	job.children[4].id = "length-" + number;
-	job.children[1].setAttribute("for","length-" + number);
+	job.children[3].setAttribute("for","length-" + number);
+	job.children[5].setAttribute("onclick","removeJob(" + number + ")");
 }
 
 // changes all the inputs for a job to 0
@@ -62,7 +72,7 @@ function FIFO(jobs) {
 	var time = 0;
 	for (job of jobs) {
 		console.log(job.name + " runs at time " + time);
-		time += job.length; 
+		time += job.length; // currently treated as a string not a number
 	}
 	console.log("All jobs complete at time " + time);
 }

@@ -1,6 +1,3 @@
-<!--
-start off with being able to add 3 jobs into a form, print out results in text form
--->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,11 +16,12 @@ start off with being able to add 3 jobs into a form, print out results in text f
 			<form>
 				<div id="jobs">
 					<div id="job-1">
-						<p>Job 1</p>
+						<span>Job 1</span>
 						<label for="start-1">Start time</label>
-						<input type="text" id="start-1" value="0">
+						<input type="number" id="start-1" value="0" step="1" min="0">
 						<label for="length-1">Job length</label>
-						<input type="text" id="length-1" value="0">
+						<input type="number" id="length-1" value="0" step="1" min="0">
+						<input type="button" value="Remove Job" onclick="removeJob(1)">
 					</div>
 				</div>
 				<input type="button" value="Add Job" onclick="addJob()">
