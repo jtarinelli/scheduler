@@ -28,7 +28,7 @@ function readInJobs() {
 }
 
 function FIFO(jobs) {	
-	jobs.sort(job => job.start); // check about compatability of arrow functions
+	jobs.sort((a, b) => a.start - b.start); // check about compatability of arrow functions
 	var time = 0;
 	var blocks = []; // idk what else to call this
 	
@@ -66,7 +66,7 @@ function makeBlockNode(blockObj) {
 }
 
 function roundRobin(jobs, quantum) {
-	jobs.sort(job => job.start);
+	jobs.sort((a, b) => a.start - b.start); 
 	var i = 0;
 	
 }
