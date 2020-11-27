@@ -4,7 +4,6 @@
 function submitButton() {
 	console.log("submit button pressed");
 	jobs = readInJobs();
-	console.log(jobs);
 	FIFO(jobs);
 }
 
@@ -33,6 +32,23 @@ function FIFO(jobs) {
 	var blocks = []; // idk what else to call this
 	
 	for (job of jobs) {
+		// check for gaps between jobs
+		if (blocks.length == 0 && job.start != 0) {
+			blocks.push({
+				name: "Empty",
+				start: 0,
+				length: job.start
+			});
+			time += job.start;
+		} else if ((time + jobs[jobs.length - 1].length) < job.start) {
+			blocks.push({
+				name: "Empty",
+				start: time,
+				length: job.start - time
+			});
+			time = job.start;
+		}
+		
 		console.log(job.name + " runs at time " + time);
 		blocks.push({
 			name: job.name,
