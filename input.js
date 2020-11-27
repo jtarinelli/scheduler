@@ -10,7 +10,7 @@ function addJob() {
 		var jobsList = document.getElementById("jobs");
 		var newJob = job1.cloneNode(true);
 		changeJobNumber(newJob, numJobs);
-		resetJob(newJob);
+		setJobValues(newJob, 0, 0);
 		jobsList.appendChild(newJob);
 	}
 }
@@ -37,8 +37,23 @@ function changeJobNumber(job, number) {
 	job.children[5].setAttribute("onclick","removeJob(" + number + ")");
 }
 
-// changes all the inputs for a job to 0
-function resetJob(job) {
-	job.children[2].value = 0;
-	job.children[4].value = 0;
+// sets the arrival time and length of a job
+function setJobValues(job, arrival, length) {
+	job.children[2].value = arrival;
+	job.children[4].value = length;
+}
+
+// sets the arrival and length of every job to a random value
+function randomize() {
+	var jobsList = document.getElementById("jobs").children;
+	arrivalMin = 0;
+	arrivalMax = 10;
+	lengthMin = 1;
+	lengthMax = 10;
+	
+	for (job of jobsList) {
+		var arrival = Math.floor(Math.random() * (arrivalMax - arrivalMin) ) + arrivalMin;
+		var length = Math.floor(Math.random() * (lengthMax - lengthMin) ) + lengthMin;
+		setJobValues(job, arrival, length);
+	}
 }
