@@ -1,4 +1,6 @@
 var numJobs = 1;
+var minJobs = 1;
+var maxJobs = 10;
 var jobs = {}; 
 
 function changeTitle() {
@@ -7,22 +9,26 @@ function changeTitle() {
 }
 
 function addJob() {
-	numJobs++;
-	var job1 = document.getElementById("job-1");
-	var jobsList = document.getElementById("jobs");
-	var newJob = job1.cloneNode(true);
-	changeJobNumber(newJob, numJobs);
-	resetJob(newJob);
-	jobsList.appendChild(newJob);
+	if (numJobs < maxJobs) {
+		numJobs++;
+		var job1 = document.getElementById("job-1");
+		var jobsList = document.getElementById("jobs");
+		var newJob = job1.cloneNode(true);
+		changeJobNumber(newJob, numJobs);
+		resetJob(newJob);
+		jobsList.appendChild(newJob);
+	}
 }
 
 function removeJob(number) {
-	var jobsList = document.getElementById("jobs");
-	jobsList.removeChild(jobsList.children[number-1]);
-	for(i = number-1; i < jobsList.childElementCount; i++) {
-		changeJobNumber(jobsList.children[i], i+1);
+	if (numJobs > minJobs) {
+		var jobsList = document.getElementById("jobs");
+		jobsList.removeChild(jobsList.children[number-1]);
+		for(i = number-1; i < jobsList.childElementCount; i++) {
+			changeJobNumber(jobsList.children[i], i+1);
+		}
+		numJobs--;
 	}
-	numJobs--;
 }
 
 // updates an existing job to change all references to its number
@@ -51,6 +57,7 @@ function submitButton() {
 }
 
 // reads in input from the form and returns a list of job objects
+// maybe want to take out a function that takes in job node and returns job object
 function readInJobs() {
 	var jobsList = document.getElementById("jobs");
 	var jobs = []
