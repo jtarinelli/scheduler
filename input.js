@@ -2,7 +2,6 @@
 var numJobs = 1;
 var minJobs = 1;
 var maxJobs = 10;
-var jobs = {}; 
 
 function addJob() {
 	if (numJobs < maxJobs) {

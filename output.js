@@ -1,4 +1,4 @@
-// functions to manage the actual simulation and generating output
+// functions to read in input, manage the actual simulation, and generate output
 
 // runs when submit/go button is clicked
 function submitButton() {
@@ -27,10 +27,7 @@ function readInJobs() {
 	return jobs;
 }
 
-function FIFO(jobs) {
-	var output = document.getElementById("output");
-	output.innerHTML = ""; // controversial way to clear all children
-	
+function FIFO(jobs) {	
 	jobs.sort(job => job.start); // check about compatability of arrow functions
 	var time = 0;
 	var blocks = []; // idk what else to call this
@@ -46,12 +43,26 @@ function FIFO(jobs) {
 	}
 	console.log("All jobs complete at time " + time);
 	
+	generateOutput(blocks);
+}
+
+// takes an array of blocks and makes it into nodes and puts them on the page (terrible description)
+function generateOutput(blocks) {
+	var output = document.getElementById("output");
+	output.innerHTML = ""; // controversial way to clear all children
+	
 	for (block of blocks) {
-		var newBlock = document.createElement("div");
-		newBlock.innerText = block.name;
-		newBlock.setAttribute("style", "border: 1px solid black; height: " + (block.length * 16) + "px;");
+		var newBlock = makeBlockNode(block);
 		output.appendChild(newBlock);
 	}
+}
+
+// takes in a block object and returns a block node
+function makeBlockNode(blockObj) {
+	var blockNode = document.createElement("div");
+	blockNode.innerText = blockObj.name + "~  start: " + blockObj.start + "  end: " + (blockObj.start + blockObj.length);
+	blockNode.setAttribute("style", "border: 1px solid black; height: " + (blockObj.length * 16) + "px;");
+	return blockNode;
 }
 
 function roundRobin(jobs, quantum) {
