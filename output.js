@@ -2,7 +2,6 @@
 
 // runs when submit/go button is clicked
 function submitButton() {
-	console.log("submit button pressed");
 	jobs = readInJobs();
 	FIFO(jobs);
 }
@@ -33,14 +32,7 @@ function FIFO(jobs) {
 	
 	for (job of jobs) {
 		// check for gaps between jobs
-		if (blocks.length == 0 && job.start != 0) {
-			blocks.push({
-				name: "Empty",
-				start: 0,
-				length: job.start
-			});
-			time += job.start;
-		} else if ((time + jobs[jobs.length - 1].length) < job.start) {
+		if ((blocks.length == 0 && job.start != 0) || ((blocks[blocks.length-1].start + blocks[blocks.length-1].length) < job.start)) {
 			blocks.push({
 				name: "Empty",
 				start: time,
@@ -49,7 +41,6 @@ function FIFO(jobs) {
 			time = job.start;
 		}
 		
-		console.log(job.name + " runs at time " + time);
 		blocks.push({
 			name: job.name,
 			start: time,
@@ -57,7 +48,6 @@ function FIFO(jobs) {
 		});
 		time += job.length;
 	}
-	console.log("All jobs complete at time " + time);
 	
 	generateOutput(blocks);
 }
