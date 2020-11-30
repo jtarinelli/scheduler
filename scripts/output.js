@@ -2,8 +2,8 @@
 
 // runs when submit/go button is clicked
 function submitButton() {
-	var jobs = readInJobs();
-	var blocks = FIFO(jobs);
+	let jobs = readInJobs();
+	let blocks = FIFO(jobs);
 	generateSimulation(blocks);
 	generateStats(jobs);
 }
@@ -11,13 +11,13 @@ function submitButton() {
 // reads in input from the form and returns a list of job objects
 // maybe want to take out a function that takes in job node and returns job object
 function readInJobs() {
-	var jobsList = document.getElementById("jobs");
-	var jobs = [];
+	let jobsList = document.getElementById("jobs");
+	let jobs = [];
 	
 	for(job of jobsList.children) {
-		var name = job.children[0].innerText;
-		var arrival = Number(job.children[2].value);
-		var length = Number(job.children[4].value);
+		let name = job.children[0].innerText;
+		let arrival = Number(job.children[2].value);
+		let length = Number(job.children[4].value);
 		jobs.push({
 			name: name,
 			arrival: arrival,
@@ -33,8 +33,8 @@ function readInJobs() {
 // using the first in first out (FIFO) algorithm
 function FIFO(jobs) {	
 	jobs.sort((a, b) => a.arrival - b.arrival); // check about compatability of arrow functions
-	var time = 0;
-	var blocks = []; 
+	let time = 0;
+	let blocks = []; 
 	
 	for (job of jobs) {
 		// check for gaps between jobs, or between time 0 and the first job
@@ -63,37 +63,37 @@ function FIFO(jobs) {
 
 // takes an array of blocks and makes it into nodes and puts them on the page (terrible description)
 function generateSimulation(blocks) {
-	var output = document.getElementById("output");
+	let output = document.getElementById("output");
 	output.innerHTML = ""; // controversial way to clear all children
 	
 	for (block of blocks) {
-		var newBlock = makeBlockNode(block);
+		let newBlock = makeBlockNode(block);
 		output.appendChild(newBlock);
 	}
 }
 
 // calculates the average response and turnaround time and adds them to the end of the output
 function generateStats(jobs) {
-	var output = document.getElementById("output");
-	var turnaroundTotal = 0;
-	var responseTotal = 0;
+	let output = document.getElementById("output");
+	let turnaroundTotal = 0;
+	let responseTotal = 0;
 	
 	for (job of jobs) {
 		turnaroundTotal += (job.finish - job.arrival);
 		responseTotal += (job.start - job.arrival);
 	}
 	
-	var averageTurnaround = turnaroundTotal / jobs.length;
-	var averageResponse = responseTotal / jobs.length;
+	let averageTurnaround = turnaroundTotal / jobs.length;
+	let averageResponse = responseTotal / jobs.length;
 	
-	var averages = document.createElement("div");
+	let averages = document.createElement("div");
 	averages.innerHTML = "Average Turnaround Time: " + averageTurnaround + "</br>Average Response Time: " + averageResponse;
 	output.appendChild(averages);
 }
 
 // takes in a block object and returns a block node
 function makeBlockNode(blockObj) {
-	var blockNode = document.createElement("div");
+	let blockNode = document.createElement("div");
 	blockNode.innerText = blockObj.name + "~  start: " + blockObj.start + "  end: " + (blockObj.start + blockObj.length);
 	blockNode.setAttribute("style", "border: 1px solid black; height: " + (blockObj.length * 16) + "px;");
 	return blockNode;
@@ -101,6 +101,6 @@ function makeBlockNode(blockObj) {
 
 function roundRobin(jobs, quantum) {
 	jobs.sort((a, b) => a.arrival - b.arrival); 
-	var i = 0;
+	let i = 0;
 	
 }

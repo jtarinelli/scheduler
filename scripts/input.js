@@ -1,14 +1,14 @@
 // functions to manage the input/form
-var numJobs = 1;
-var minJobs = 1;
-var maxJobs = 10;
+let numJobs = 1;
+let minJobs = 1;
+let maxJobs = 10;
 
 function addJob() {
 	if (numJobs < maxJobs) {
 		numJobs++;
-		var job1 = document.getElementById("job-1");
-		var jobsList = document.getElementById("jobs");
-		var newJob = job1.cloneNode(true);
+		let job1 = document.getElementById("job-1");
+		let jobsList = document.getElementById("jobs");
+		let newJob = job1.cloneNode(true);
 		changeJobNumber(newJob, numJobs);
 		setJobValues(newJob, 0, 0);
 		jobsList.appendChild(newJob);
@@ -17,7 +17,7 @@ function addJob() {
 
 function removeJob(number) {
 	if (numJobs > minJobs) {
-		var jobsList = document.getElementById("jobs");
+		let jobsList = document.getElementById("jobs");
 		jobsList.removeChild(jobsList.children[number-1]);
 		for(i = number-1; i < jobsList.childElementCount; i++) {
 			changeJobNumber(jobsList.children[i], i+1);
@@ -45,15 +45,15 @@ function setJobValues(job, arrival, length) {
 
 // sets the arrival and length of every job to a random value
 function randomize() {
-	var jobsList = document.getElementById("jobs").children;
+	let jobsList = document.getElementById("jobs").children;
 	arrivalMin = 0;
 	arrivalMax = 10;
 	lengthMin = 1;
 	lengthMax = 10;
 	
 	for (job of jobsList) {
-		var arrival = Math.floor(Math.random() * (arrivalMax - arrivalMin) ) + arrivalMin;
-		var length = Math.floor(Math.random() * (lengthMax - lengthMin) ) + lengthMin;
+		let arrival = Math.floor(Math.random() * (arrivalMax - arrivalMin) ) + arrivalMin;
+		let length = Math.floor(Math.random() * (lengthMax - lengthMin) ) + lengthMin;
 		setJobValues(job, arrival, length);
 	}
 }
