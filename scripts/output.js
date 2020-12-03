@@ -1,9 +1,12 @@
 // functions to read in input, run the actual simulation, and generate output
+// maybe should seperate out all document.getWhatever from normal functions
 
 // runs when submit/go button is clicked
 function submitButton() {
 	let jobs = readInJobs();
-	let blocks = FIFO(jobs);
+	let quantum = Number(document.getElementById("quantum").value); // don't leave this in here
+	let blocks = roundRobin(jobs, 1);
+	//let blocks = FIFO(jobs);
 	generateSimulation(blocks);
 	generateStats(jobs);
 }
@@ -23,7 +26,9 @@ function readInJobs() {
 			arrival: arrival,
 			length, length,
 			start: -1, 
-			finish: -1
+			finish: -1,
+			runtime: 0, // not used for FIFO
+			completed: false // not used for FIFO
 		});
 	}
 	return jobs;
@@ -58,6 +63,71 @@ function FIFO(jobs) {
 		job.finish = time;
 	}
 	
+	return blocks;
+}
+
+// question: if a job finishes before the time slice is up,
+// does the scheduler go straight to the next job or is the CPU empty
+// until the end of that timeslice? right now i'm making it so it jumps
+// right to the next job
+// similarly, if a job arrives in the middle of an empty timeslice, does
+// it start right away or wait for the next timeslice to start? right now
+// it starts right away
+function roundRobin(jobs, quantum) {
+	jobs.sort((a, b) => a.arrival - b.arrival); 
+	let time = 0;
+	let completedJobs = 0;
+	let blocks = [];
+	
+	while (completedJobs < jobs.length) {
+	//for (let i=0; i<10; i++) {
+		console.log(jobs);
+		console.log(completedJobs);
+		
+		// check for gaps between jobs? 
+		if (jobs.filter(job => !job.completed).every(job => job.arrival > time)) {
+			let sortedIncompleteJobs = jobs.filter(job => !job.completed).sort((a, b) => a.arrival - b.arrival);
+			let nextJob = sortedIncompleteJobs[0];
+			
+			blocks.push({
+				name: "Empty",
+				start: time,
+				length: nextJob.arrival - time
+			});
+			time = nextJob.arrival;
+		}
+		
+		
+		for (job of jobs.filter(job => !job.completed)) {
+			console.log(job);
+			
+			if (job.arrival <= time) {
+				if (job.runtime == 0) {
+					job.start = time;
+				}
+				
+				let thisBlock = {
+					name: job.name,
+					start: time,
+					length: quantum
+				}
+
+				if (job.runtime + quantum >= job.length) {
+					time += job.length - job.runtime;
+					thisBlock.length = job.length - job.runtime;
+					job.runtime = job.length;
+					job.finish = time;
+					job.completed = true;
+					completedJobs += 1;
+				} else {
+					time += quantum;
+					job.runtime += quantum;
+				}
+				blocks.push(thisBlock);
+			} 
+		}
+	}
+
 	return blocks;
 }
 
@@ -97,10 +167,4 @@ function makeBlockNode(blockObj) {
 	blockNode.innerText = blockObj.name + "~  start: " + blockObj.start + "  end: " + (blockObj.start + blockObj.length);
 	blockNode.setAttribute("style", "border: 1px solid black; height: " + (blockObj.length * 16) + "px;");
 	return blockNode;
-}
-
-function roundRobin(jobs, quantum) {
-	jobs.sort((a, b) => a.arrival - b.arrival); 
-	let i = 0;
-	
 }

@@ -12,7 +12,7 @@
 		<script src="scripts/input.js"></script>
 		<script src="scripts/output.js"></script>
 		
-		<h1>wow!</h1>
+		<h1>Julia's Cool Scheduler</h1>
 		
 		<div id="input">
 			<form>
@@ -29,7 +29,9 @@
 						<input type="button" value="Remove Job" onclick="removeJob(1)">
 					</div>
 				</div>
-				<input type="button" value="Go!" onclick="submitButton()">
+				<label for="quantum">Quantum Length (round robin)</label>
+				<input type="number" id="quantum" value="1" step="1" min="1"><br/>
+				<input type="button" value="Run Simulation" onclick="submitButton()">
 			</form>
 		</div>
 		
