@@ -3,7 +3,9 @@ let numJobs = 1;
 let minJobs = 1;
 let maxJobs = 10;
 
-let colors = ["blue", "red", "yellow", "pink", "purple", "green", "magenta", "teal", "violet", "gray"];
+// should probably just do this with css classes now that i think about it
+//let colors = ["blue", "red", "yellow", "pink", "purple", "green", "magenta", "teal", "violet", "gray"];
+let colors = ["#FF9AA2", "#FFB7B2", "#FFDAC1", "#E2F0CB", "#B5EAD7", "#C7CEEA", "gray", "gray", "gray", "gray"];
 
 function addJob() {
 	if (numJobs < maxJobs) {
