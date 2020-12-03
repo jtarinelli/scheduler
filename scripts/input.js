@@ -3,6 +3,8 @@ let numJobs = 1;
 let minJobs = 1;
 let maxJobs = 10;
 
+let colors = ["blue", "red", "yellow", "pink", "purple", "green", "magenta", "teal", "violet", "gray"];
+
 function addJob() {
 	if (numJobs < maxJobs) {
 		numJobs++;
@@ -29,6 +31,8 @@ function removeJob(number) {
 // updates an existing job to change all references to its number
 function changeJobNumber(job, number) {
 	job.id = "job-" + number;
+	job.style = "background: " + colors[number - 1] + ";";
+	job.setAttribute("color", colors[number - 1]);
 	job.children[0].innerText = "Job " + number;
 	job.children[2].id = "start-" + number;
 	job.children[1].setAttribute("for","start-" + number);

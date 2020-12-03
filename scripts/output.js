@@ -21,7 +21,7 @@ function readInJobs() {
 		let name = job.children[0].innerText;
 		let arrival = Number(job.children[2].value);
 		let length = Number(job.children[4].value);
-		let color = job.children[6].value;
+		let color = job.getAttribute("color");
 		jobs.push({
 			name: name,
 			color: color,
