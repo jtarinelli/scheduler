@@ -5,7 +5,7 @@
 function submitButton() {
 	let jobs = readInJobs();
 	let quantum = Number(document.getElementById("quantum").value); // don't leave this in here
-	let blocks = roundRobin(jobs, 1);
+	let blocks = roundRobin(jobs, quantum);
 	//let blocks = FIFO(jobs);
 	generateSimulation(blocks);
 	generateStats(jobs);
@@ -21,8 +21,10 @@ function readInJobs() {
 		let name = job.children[0].innerText;
 		let arrival = Number(job.children[2].value);
 		let length = Number(job.children[4].value);
+		let color = job.children[6].value;
 		jobs.push({
 			name: name,
+			color: color,
 			arrival: arrival,
 			length, length,
 			start: -1, 
@@ -46,6 +48,7 @@ function FIFO(jobs) {
 		if ((blocks.length == 0 && job.arrival != 0) || (blocks.length > 0 && (blocks[blocks.length-1].start + blocks[blocks.length-1].length) < job.arrival)) {
 			blocks.push({
 				name: "Empty",
+				color: "transparent",
 				start: time,
 				length: job.arrival - time
 			});
@@ -56,6 +59,7 @@ function FIFO(jobs) {
 		job.start = time;
 		blocks.push({
 			name: job.name,
+			color: job.color,
 			start: time,
 			length: job.length
 		});
@@ -68,11 +72,11 @@ function FIFO(jobs) {
 
 // question: if a job finishes before the time slice is up,
 // does the scheduler go straight to the next job or is the CPU empty
-// until the end of that timeslice? right now i'm making it so it jumps
-// right to the next job
+// until the end of that timeslice? 
+// right now it jumps right to the next job
 // similarly, if a job arrives in the middle of an empty timeslice, does
-// it start right away or wait for the next timeslice to start? right now
-// it starts right away
+// it start right away or wait for the next timeslice to start? 
+// right now it starts right away
 function roundRobin(jobs, quantum) {
 	jobs.sort((a, b) => a.arrival - b.arrival); 
 	let time = 0;
@@ -80,17 +84,15 @@ function roundRobin(jobs, quantum) {
 	let blocks = [];
 	
 	while (completedJobs < jobs.length) {
-	//for (let i=0; i<10; i++) {
-		console.log(jobs);
-		console.log(completedJobs);
 		
-		// check for gaps between jobs? 
+		// check for gaps between jobs? not 100% sure if this is correct yet
 		if (jobs.filter(job => !job.completed).every(job => job.arrival > time)) {
 			let sortedIncompleteJobs = jobs.filter(job => !job.completed).sort((a, b) => a.arrival - b.arrival);
 			let nextJob = sortedIncompleteJobs[0];
 			
 			blocks.push({
 				name: "Empty",
+				color: "transparent",
 				start: time,
 				length: nextJob.arrival - time
 			});
@@ -99,7 +101,6 @@ function roundRobin(jobs, quantum) {
 		
 		
 		for (job of jobs.filter(job => !job.completed)) {
-			console.log(job);
 			
 			if (job.arrival <= time) {
 				if (job.runtime == 0) {
@@ -108,6 +109,7 @@ function roundRobin(jobs, quantum) {
 				
 				let thisBlock = {
 					name: job.name,
+					color: job.color,
 					start: time,
 					length: quantum
 				}
@@ -165,6 +167,6 @@ function generateStats(jobs) {
 function makeBlockNode(blockObj) {
 	let blockNode = document.createElement("div");
 	blockNode.innerText = blockObj.name + "~  start: " + blockObj.start + "  end: " + (blockObj.start + blockObj.length);
-	blockNode.setAttribute("style", "border: 1px solid black; height: " + (blockObj.length * 16) + "px;");
+	blockNode.setAttribute("style", "border: 1px solid black; height: " + (blockObj.length * 16) + "px; background: " + blockObj.color +";");
 	return blockNode;
 }
