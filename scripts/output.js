@@ -11,6 +11,21 @@ function submitButton() {
 	generateStats(jobs);
 }
 
+function fifoButton() {
+	let jobs = readInJobs();
+	let blocks = FIFO(jobs);
+	generateSimulation(blocks);
+	generateStats(jobs);
+}
+
+function rrButton() {
+	let jobs = readInJobs();
+	let quantum = Number(document.getElementById("quantum").value); // don't leave this in here
+	let blocks = roundRobin(jobs, quantum);
+	generateSimulation(blocks);
+	generateStats(jobs);
+}
+
 // reads in input from the form and returns a list of job objects
 // maybe want to take out a function that takes in job node and returns job object
 function readInJobs() {
