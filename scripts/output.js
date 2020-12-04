@@ -101,6 +101,7 @@ function roundRobin(jobs, quantum) {
 	while (completedJobs < jobs.length) {
 		
 		// check for gaps between jobs? not 100% sure if this is correct yet
+		// also is probably unnecessarily complicated
 		if (jobs.filter(job => !job.completed).every(job => job.arrival > time)) {
 			let sortedIncompleteJobs = jobs.filter(job => !job.completed).sort((a, b) => a.arrival - b.arrival);
 			let nextJob = sortedIncompleteJobs[0];
@@ -113,7 +114,6 @@ function roundRobin(jobs, quantum) {
 			});
 			time = nextJob.arrival;
 		}
-		
 		
 		for (job of jobs.filter(job => !job.completed)) {
 			
@@ -141,7 +141,7 @@ function roundRobin(jobs, quantum) {
 					job.runtime += quantum;
 				}
 				
-				if (blocks[blocks.length - 1].name == thisBlock.name) {
+				if (blocks.length > 0 && blocks[blocks.length - 1].name == thisBlock.name) {
 					blocks[blocks.length - 1].length += thisBlock.length;
 				} else {
 					blocks.push(thisBlock);
