@@ -61,23 +61,13 @@ function FIFO(jobs) {
 	for (job of jobs) {
 		// check for gaps between jobs, or between time 0 and the first job
 		if ((blocks.length == 0 && job.arrival != 0) || (blocks.length > 0 && (blocks[blocks.length-1].start + blocks[blocks.length-1].length) < job.arrival)) {
-			blocks.push({
-				name: "Empty",
-				color: "transparent",
-				start: time,
-				length: job.arrival - time
-			});
+			blocks.push(makeBlock("Empty", "transparent", time, job.arrival - time));
 			time = job.arrival;
 		}
 
 		// run the whole job
 		job.start = time;
-		blocks.push({
-			name: job.name,
-			color: job.color,
-			start: time,
-			length: job.length
-		});
+		blocks.push(makeBlock(job.name, job.color, time, job.length));
 		time += job.length;
 		job.finish = time;
 	}
@@ -106,12 +96,7 @@ function roundRobin(jobs, quantum) {
 			let sortedIncompleteJobs = jobs.filter(job => !job.completed).sort((a, b) => a.arrival - b.arrival);
 			let nextJob = sortedIncompleteJobs[0];
 			
-			blocks.push({
-				name: "Empty",
-				color: "transparent",
-				start: time,
-				length: nextJob.arrival - time
-			});
+			blocks.push(makeBlock("Empty", "transparent", time, nextJob.arrival - time));
 			time = nextJob.arrival;
 		}
 		
@@ -122,12 +107,7 @@ function roundRobin(jobs, quantum) {
 					job.start = time;
 				}
 				
-				let thisBlock = {
-					name: job.name,
-					color: job.color,
-					start: time,
-					length: quantum
-				}
+				let thisBlock = makeBlock(job.name, job.color, time, quantum);
 
 				if (job.runtime + quantum >= job.length) {
 					time += job.length - job.runtime;
@@ -151,6 +131,15 @@ function roundRobin(jobs, quantum) {
 	}
 
 	return blocks;
+}
+
+function makeBlock(name, color, start, length) {
+	return {
+		name: name,
+		color: color,
+		start: start,
+		length: length
+	}
 }
 
 // takes an array of blocks and makes it into nodes and puts them on the page (terrible description)
