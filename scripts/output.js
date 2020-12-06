@@ -5,8 +5,8 @@
 function submitButton() {
 	let fifoOutput = document.getElementById("fifo-output");
 	let rrOutput = document.getElementById("rr-output");
+	let quantum = Number(document.getElementById("quantum").value); 
 	let jobs = readInJobs();
-	let quantum = Number(document.getElementById("quantum").value); // don't leave this in here
 	
 	let fifoBlocks = FIFO(jobs);
 	generateStats(jobs, fifoOutput);
