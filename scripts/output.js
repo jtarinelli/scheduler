@@ -3,29 +3,18 @@
 
 // runs when submit/go button is clicked
 function submitButton() {
-	let jobs = readInJobs();
-	let quantum = Number(document.getElementById("quantum").value); // don't leave this in here
-	let blocks = roundRobin(jobs, quantum);
-	//let blocks = FIFO(jobs);
-	generateSimulation(blocks);
-	generateStats(jobs);
-}
-
-function fifoButton() {
 	let fifoOutput = document.getElementById("fifo-output");
-	let jobs = readInJobs();
-	let blocks = FIFO(jobs);
-	generateStats(jobs, fifoOutput);
-	generateSimulation(blocks, fifoOutput);
-}
-
-function rrButton() {
 	let rrOutput = document.getElementById("rr-output");
 	let jobs = readInJobs();
 	let quantum = Number(document.getElementById("quantum").value); // don't leave this in here
-	let blocks = roundRobin(jobs, quantum);
+	
+	let fifoBlocks = FIFO(jobs);
+	generateStats(jobs, fifoOutput);
+	generateSimulation(fifoBlocks, fifoOutput);
+	
+	let rrBlocks = roundRobin(jobs, quantum);
 	generateStats(jobs, rrOutput);
-	generateSimulation(blocks, rrOutput);
+	generateSimulation(rrBlocks, rrOutput);
 }
 
 // reads in input from the form and returns a list of job objects
