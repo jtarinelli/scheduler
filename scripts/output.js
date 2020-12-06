@@ -12,18 +12,20 @@ function submitButton() {
 }
 
 function fifoButton() {
+	let fifoOutput = document.getElementById("fifo-output");
 	let jobs = readInJobs();
 	let blocks = FIFO(jobs);
-	generateSimulation(blocks);
-	generateStats(jobs);
+	generateStats(jobs, fifoOutput);
+	generateSimulation(blocks, fifoOutput);
 }
 
 function rrButton() {
+	let rrOutput = document.getElementById("rr-output");
 	let jobs = readInJobs();
 	let quantum = Number(document.getElementById("quantum").value); // don't leave this in here
 	let blocks = roundRobin(jobs, quantum);
-	generateSimulation(blocks);
-	generateStats(jobs);
+	generateStats(jobs, rrOutput);
+	generateSimulation(blocks, rrOutput);
 }
 
 // reads in input from the form and returns a list of job objects
@@ -143,10 +145,7 @@ function makeBlock(name, color, start, length) {
 }
 
 // takes an array of blocks and makes it into nodes and puts them on the page (terrible description)
-function generateSimulation(blocks) {
-	let output = document.getElementById("output");
-	output.innerHTML = ""; // controversial way to clear all children
-	
+function generateSimulation(blocks, output) {
 	for (block of blocks) {
 		let newBlock = makeBlockNode(block);
 		output.appendChild(newBlock);
@@ -154,8 +153,9 @@ function generateSimulation(blocks) {
 }
 
 // calculates the average response and turnaround time and adds them to the end of the output
-function generateStats(jobs) {
-	let output = document.getElementById("output");
+function generateStats(jobs, output) {
+	output.innerHTML = ""; // controversial way to clear all children
+	
 	let turnaroundTotal = 0;
 	let responseTotal = 0;
 	
@@ -170,6 +170,7 @@ function generateStats(jobs) {
 	let averages = document.createElement("div");
 	averages.innerHTML = "Average Turnaround Time: " + averageTurnaround + "</br>Average Response Time: " + averageResponse;
 	output.appendChild(averages);
+	output.i
 }
 
 // takes in a block object and returns a block node
