@@ -166,6 +166,6 @@ function generateStats(jobs, output) {
 function makeBlockNode(blockObj) {
 	let blockNode = document.createElement("div");
 	blockNode.innerText = blockObj.name + "~  start: " + blockObj.start + "  end: " + (blockObj.start + blockObj.length);
-	blockNode.setAttribute("style", "height: " + (blockObj.length * 16) + "px; background: " + blockObj.color +";");
+	blockNode.setAttribute("style", "height: " + (blockObj.length * 17) + "px; background: " + blockObj.color +";");
 	return blockNode;
 }
