@@ -13,42 +13,52 @@
 		<script src="scripts/input.js"></script>
 		<script src="scripts/output.js"></script>
 		
-		<h1>Julia's Cool Scheduler</h1>
+		<div id="wrapper">
 		
-		<div id="input">
-			<form>
-				<input type="button" value="Add Job" onclick="addJob()">
-				<input type="button" value="Randomize Values" onclick="randomize()">
-				<input type="reset" value="Reset Values">
-				<div id="jobs">
-					<div id="job-1" style="background: #FF9AA2;" color="#FF9AA2">
-						<span>Job 1</span>
-						<label for="start-1">Arrival time</label>
-						<input type="number" id="start-1" value="0" step="1" min="0">
-						<label for="length-1">Length</label>
-						<input type="number" id="length-1" value="0" step="1" min="0">
-						<label for="io-1">I/O Frequency</label>
-						<input type="number" id="io-1" value="0" step="1" min="0">
-						<input type="button" value="Remove Job" onclick="removeJob(1)">
+			<h1>Julia's Cool Scheduler</h1>
+			
+			<div id="input">
+				<form>
+					<div id="buttons">
+						<input type="button" value="Add Job" onclick="addJob()">
+						<input type="button" value="Randomize Values" onclick="randomize()">
+						<input type="reset" value="Reset Values">
+					</div>
+					<div id="jobs">
+						<div id="job-1" class="job-input" style="background: #FF9AA2;" color="#FF9AA2">
+							<span>Job 1</span>
+							<label for="start-1">Arrival time</label>
+							<input type="number" id="start-1" value="0" step="1" min="0">
+							<label for="length-1">Length</label>
+							<input type="number" id="length-1" value="0" step="1" min="0">
+							<label for="io-1">I/O Frequency</label>
+							<input type="number" id="io-1" value="0" step="1" min="0">
+							<input type="button" value="Remove Job" onclick="removeJob(1)">
+						</div>
+					</div>
+					<div id="options">
+						<label for="quantum">Quantum Length (round robin)</label>
+						<input type="number" id="quantum" value="1" step="1" min="1"><br/>
+					</div>
+					<div id="submit-button">
+						<input type="button" value="Run Simulation" onclick="submitButton()">
+					</div>
+				</form>
+			</div>
+			
+			<div id="output">
+				<div id="fifo">
+					<h2>FIFO</h2>
+					<div id="fifo-output">
 					</div>
 				</div>
-				<label for="quantum">Quantum Length (round robin)</label>
-				<input type="number" id="quantum" value="1" step="1" min="1"><br/>
-				<input type="button" value="Run Simulation" onclick="submitButton()">
-			</form>
-		</div>
-		
-		<div id="output">
-			<div id="fifo">
-				<h2>FIFO</h2>
-				<div id="fifo-output">
+				<div id="rr">
+					<h2>RR</h2>
+					<div id="rr-output">
+					</div>
 				</div>
 			</div>
-			<div id="rr">
-				<h2>RR</h2>
-				<div id="rr-output">
-				</div>
-			</div>
+			
 		</div>
 
 	</body>

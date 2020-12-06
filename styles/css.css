@@ -1,3 +1,26 @@
 body {
-	font-family: sans-serif;
+	font-family: "verdana", sans-serif;
+	font-size: 14px;
+	display: flex; /* idk if flexbox is the best solution here but it's all i know */ 
+	flex-direction: row;
+	justify-content: center;
+}
+
+#wrapper {
+	width: 1000px;
+	margin: 20px;
+}
+
+#input div {
+	padding: 5px;
+}
+
+#output {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.blocks {
+	margin: 20px 0px;
 }

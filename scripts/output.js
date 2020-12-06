@@ -135,10 +135,13 @@ function makeBlock(name, color, start, length) {
 
 // takes an array of blocks and makes it into nodes and puts them on the page (terrible description)
 function generateSimulation(blocks, output) {
+	let blocksDiv = document.createElement("div");
+	blocksDiv.setAttribute("class", "blocks");
 	for (block of blocks) {
 		let newBlock = makeBlockNode(block);
-		output.appendChild(newBlock);
+		blocksDiv.appendChild(newBlock);
 	}
+	output.appendChild(blocksDiv);
 }
 
 // calculates the average response and turnaround time and adds them to the end of the output
@@ -158,6 +161,7 @@ function generateStats(jobs, output) {
 	
 	let averages = document.createElement("div");
 	averages.innerHTML = "Average Turnaround Time: " + averageTurnaround + "</br>Average Response Time: " + averageResponse;
+	averages.setAttribute("class", "stats");
 	output.appendChild(averages);
 	output.i
 }
