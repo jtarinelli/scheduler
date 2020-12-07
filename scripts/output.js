@@ -80,6 +80,8 @@ function FIFO(jobs) {
 /* right if a job doesn't take up a whole time slice, the interrupt 
  * interval resets after it's done which i don't think is right
  * should add another job until the end of the slice, then switch
+ * basically, its fine for a job to start and finish not on the time slice
+ * but the next job should always start/end on it
  */
 function roundRobin(jobs, quantum) {
 	jobs.sort((a, b) => a.arrival - b.arrival); 
@@ -116,16 +118,8 @@ function roundRobin(jobs, quantum) {
 					job.completed = true;
 					completedJobs += 1;
 				} else {
-					console.log(time, time%quantum);
-				/*
-					if (time % quantum != 0) { // check if we're off the normal timeslice
-						let runtime = time + (quantum - (time % quantum));
-						time += runtime;
-						job.runtime += runtime;
-					} else { */
-						time += quantum;
-						job.runtime += quantum;
-					//}
+					time += quantum;
+					job.runtime += quantum;
 				}
 				
 				if (blocks.length > 0 && blocks[blocks.length - 1].name == thisBlock.name) {
