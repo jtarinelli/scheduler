@@ -27,12 +27,14 @@ function readInJobs() {
 		let name = job.children[0].innerText;
 		let arrival = Number(job.children[2].value);
 		let length = Number(job.children[4].value);
+		let ioFreq = Number(job.children[4].value);
 		let color = job.getAttribute("color");
 		jobs.push({
 			name: name,
 			color: color,
 			arrival: arrival,
 			length, length,
+			ioFreq: ioFreq,
 			start: -1, 
 			finish: -1,
 			runtime: 0, // not used for FIFO

@@ -14,7 +14,7 @@ function addJob() {
 		let jobsList = document.getElementById("jobs");
 		let newJob = job1.cloneNode(true);
 		changeJobNumber(newJob, numJobs);
-		setJobValues(newJob, 0, 0);
+		setJobValues(newJob, 0, 0, 0);
 		jobsList.appendChild(newJob);
 	}
 }
@@ -44,9 +44,10 @@ function changeJobNumber(job, number) {
 }
 
 // sets the arrival time and length of a job
-function setJobValues(job, arrival, length) {
+function setJobValues(job, arrival, length, ioFreq) {
 	job.children[2].value = arrival;
 	job.children[4].value = length;
+	job.children[6].value = ioFreq;
 }
 
 // sets the arrival and length of every job to a random value
@@ -56,10 +57,13 @@ function randomize() {
 	arrivalMax = 10;
 	lengthMin = 1;
 	lengthMax = 10;
+	ioFreqMin = 0;
+	ioFreqMax = 10;
 	
 	for (job of jobsList) {
 		let arrival = Math.floor(Math.random() * (arrivalMax - arrivalMin) ) + arrivalMin;
 		let length = Math.floor(Math.random() * (lengthMax - lengthMin) ) + lengthMin;
-		setJobValues(job, arrival, length);
+		let ioFreq = Math.floor(Math.random() * (ioFreqMax - ioFreqMin) ) + ioFreqMin;
+		setJobValues(job, arrival, length, ioFreq);
 	}
 }
