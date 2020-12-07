@@ -10,6 +10,7 @@ so maybe go back and stick jobs with the same name back together at the end
 
 // runs when submit/go button is clicked
 function submitButton() {
+	console.log("go");
 	let fifoOutput = document.getElementById("fifo-output");
 	let rrOutput = document.getElementById("rr-output");
 	let quantum = Number(document.getElementById("quantum").value); 
@@ -81,12 +82,13 @@ function FIFO(jobs) {
 // change something and hit go
 // maybe its just cause it takes too long idk
 function roundRobin(jobs, quantum) {
+	//jobs = jobs.filter(job => job.length != 0);
 	let time = 0;
 	let completedJobs = 0;
 	let jobIndex = 0;
 	let blocks = [];
 
-	while (completedJobs < jobs.length && time < 20) {
+	while (completedJobs < jobs.length) {
 		let queue = jobs.filter(job => !job.completed && job.arrival <= time).sort((a, b) => a.arrival - b.arrival);
 		let thisBlock = null;
 		
@@ -94,9 +96,10 @@ function roundRobin(jobs, quantum) {
 			thisBlock = makeBlock("Empty", "transparent", time, 1);
 		} else {
 			if (time % quantum == 0) {
-				jobIndex = (jobIndex + 1) % queue.length;
+				jobIndex += 1;
 			}
 			
+			jobIndex = jobIndex % queue.length;
 			let job = queue[jobIndex];
 			
 			if (job.runtime == 0) {
@@ -106,7 +109,7 @@ function roundRobin(jobs, quantum) {
 			job.runtime += 1;
 			thisBlock = makeBlock(job.name, job.color, time, 1);
 			
-			if (job.runtime == job.length) {
+			if (job.runtime >= job.length) {
 				job.finish = time + 1;
 				job.completed = true;
 				completedJobs += 1;
@@ -116,7 +119,7 @@ function roundRobin(jobs, quantum) {
 		// combine this block with the previous one if possible
 		if (thisBlock != null && blocks.length > 0 && thisBlock.name == blocks[blocks.length-1].name) {
 			blocks[blocks.length - 1].length += 1;
-		} else {
+		} else if (thisBlock != null) {
 			blocks.push(thisBlock);
 		}
 		
