@@ -77,6 +77,9 @@ function FIFO(jobs) {
 	return blocks;
 }
 
+// i think this works except sometimes rr doesn't update and fifo does when you 
+// change something and hit go
+// maybe its just cause it takes too long idk
 function roundRobin(jobs, quantum) {
 	let time = 0;
 	let completedJobs = 0;
@@ -90,7 +93,6 @@ function roundRobin(jobs, quantum) {
 		if (queue.length == 0) {
 			thisBlock = makeBlock("Empty", "transparent", time, 1);
 		} else {
-			
 			if (time % quantum == 0) {
 				jobIndex = (jobIndex + 1) % queue.length;
 			}
