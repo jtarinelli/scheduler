@@ -77,12 +77,55 @@ function FIFO(jobs) {
 	return blocks;
 }
 
-/* right if a job doesn't take up a whole time slice, the interrupt 
- * interval resets after it's done which i don't think is right
- * should add another job until the end of the slice, then switch
- * basically, its fine for a job to start and finish not on the time slice
- * but the next job should always start/end on it
- */
+function roundRobin(jobs, quantum) {
+	let time = 0;
+	let completedJobs = 0;
+	let jobIndex = 0;
+	let blocks = [];
+
+	while (completedJobs < jobs.length && time < 20) {
+		let queue = jobs.filter(job => !job.completed && job.arrival <= time).sort((a, b) => a.arrival - b.arrival);
+		let thisBlock = null;
+		
+		if (queue.length == 0) {
+			thisBlock = makeBlock("Empty", "transparent", time, 1);
+		} else {
+			
+			if (time % quantum == 0) {
+				jobIndex = (jobIndex + 1) % queue.length;
+			}
+			
+			let job = queue[jobIndex];
+			
+			if (job.runtime == 0) {
+				job.start = time;
+			}
+			
+			job.runtime += 1;
+			thisBlock = makeBlock(job.name, job.color, time, 1);
+			
+			if (job.runtime == job.length) {
+				job.finish = time + 1;
+				job.completed = true;
+				completedJobs += 1;
+				jobIndex = (jobIndex + 1) % queue.length;
+			}
+		}
+		
+		// combine this block with the previous one if possible
+		if (thisBlock != null && blocks.length > 0 && thisBlock.name == blocks[blocks.length-1].name) {
+			blocks[blocks.length - 1].length += 1;
+		} else {
+			blocks.push(thisBlock);
+		}
+		
+		time += 1;
+	}
+	
+	return blocks; 
+ }
+ 
+ /*
 function roundRobin(jobs, quantum) {
 	jobs.sort((a, b) => a.arrival - b.arrival); 
 	let time = 0;
@@ -133,6 +176,7 @@ function roundRobin(jobs, quantum) {
 
 	return blocks;
 }
+*/
 
 function makeBlock(name, color, start, length) {
 	return {
