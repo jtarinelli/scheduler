@@ -10,11 +10,11 @@ so maybe go back and stick jobs with the same name back together at the end
 
 // runs when submit/go button is clicked
 function submitButton() {
-	console.log("go");
 	let fifoOutput = document.getElementById("fifo-output");
 	let rrOutput = document.getElementById("rr-output");
 	let quantum = Number(document.getElementById("quantum").value); 
 	let jobs = readInJobs();
+	jobs = breakUpIO(jobs);
 	
 	let fifoBlocks = FIFO(jobs);
 	generateStats(jobs, fifoOutput);
@@ -36,7 +36,7 @@ function readInJobs() {
 		let name = job.children[0].innerText;
 		let arrival = Number(job.children[2].value);
 		let length = Number(job.children[4].value);
-		let ioFreq = Number(job.children[4].value);
+		let ioFreq = Number(job.children[6].value);
 		let color = job.getAttribute("color");
 		jobs.push({
 			name: name,
@@ -51,6 +51,40 @@ function readInJobs() {
 		});
 	}
 	return jobs;
+}
+
+/* takes in jobs and breaks them into smaller subjobs when they're not waiting for i/o
+*/
+function breakUpIO(jobs) {
+	console.log(jobs);
+	let newJobs = [];
+	for (job of jobs) {
+		if (job.ioFreq == 0 || job.ioFreq >= job.length) {
+			newJobs.push(job);
+		} else {
+			let runtime = 0;
+			let time = job.arrival;
+			for (let i = 0; i < Math.floor(job.length / job.ioFreq); i++) {
+				let subJob = {};
+				Object.assign(subJob, job); // copies values of job to subJob (check compatability) 
+				subJob.arrival = time;
+				subJob.length = job.ioFreq;
+				newJobs.push(subJob);
+				runtime += job.ioFreq;
+				time += job.ioFreq + ioLength;
+			}
+
+			if (runtime != job.length) {
+				let subJob = {};
+				Object.assign(subJob, job);
+				subJob.arrival = time;
+				subJob.length = job.length - runtime;
+				newJobs.push(subJob);
+			}
+		}
+	}
+	console.log(newJobs);
+	return newJobs
 }
 
 /* reads in a list of jobs and returns a list of blocks (as in blocks of time when each job runs)
