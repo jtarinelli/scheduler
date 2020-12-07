@@ -1,6 +1,13 @@
 // functions to read in input, run the actual simulation, and generate output
 // maybe should seperate out all document.getWhatever from normal functions
 
+let ioLength = 1;
+/* to handle i/o, literally break jobs up into multiple jobs
+with the same name when they're not waiting for io???
+only problem is that it screws up generating stats 
+so maybe go back and stick jobs with the same name back together at the end
+*/
+
 // runs when submit/go button is clicked
 function submitButton() {
 	let fifoOutput = document.getElementById("fifo-output");
@@ -17,8 +24,9 @@ function submitButton() {
 	generateSimulation(rrBlocks, rrOutput);
 }
 
-// reads in input from the form and returns a list of job objects
-// maybe want to take out a function that takes in job node and returns job object
+/* reads in input from the form and returns a list of job objects
+ * maybe want to take out a function that takes in job node and returns job object
+ */
 function readInJobs() {
 	let jobsList = document.getElementById("jobs");
 	let jobs = [];
@@ -44,8 +52,9 @@ function readInJobs() {
 	return jobs;
 }
 
-// reads in a list of jobs and returns a list of blocks (as in blocks of time when each job runs)
-// using the first in first out (FIFO) algorithm
+/* reads in a list of jobs and returns a list of blocks (as in blocks of time when each job runs)
+ * using the first in first out (FIFO) algorithm
+ */
 function FIFO(jobs) {	
 	jobs.sort((a, b) => a.arrival - b.arrival); // check about compatability of arrow functions
 	let time = 0;
@@ -68,13 +77,10 @@ function FIFO(jobs) {
 	return blocks;
 }
 
-// question: if a job finishes before the time slice is up,
-// does the scheduler go straight to the next job or is the CPU empty
-// until the end of that timeslice? 
-// right now it jumps right to the next job
-// similarly, if a job arrives in the middle of an empty timeslice, does
-// it start right away or wait for the next timeslice to start? 
-// right now it starts right away
+/* right if a job doesn't take up a whole time slice, the interrupt 
+ * interval resets after it's done which i don't think is right
+ * should add another job until the end of the slice, then switch
+ */
 function roundRobin(jobs, quantum) {
 	jobs.sort((a, b) => a.arrival - b.arrival); 
 	let time = 0;
@@ -110,8 +116,16 @@ function roundRobin(jobs, quantum) {
 					job.completed = true;
 					completedJobs += 1;
 				} else {
-					time += quantum;
-					job.runtime += quantum;
+					console.log(time, time%quantum);
+				/*
+					if (time % quantum != 0) { // check if we're off the normal timeslice
+						let runtime = time + (quantum - (time % quantum));
+						time += runtime;
+						job.runtime += runtime;
+					} else { */
+						time += quantum;
+						job.runtime += quantum;
+					//}
 				}
 				
 				if (blocks.length > 0 && blocks[blocks.length - 1].name == thisBlock.name) {
@@ -171,7 +185,7 @@ function generateStats(jobs, output) {
 // takes in a block object and returns a block node
 function makeBlockNode(blockObj) {
 	let blockNode = document.createElement("div");
-	blockNode.innerText = blockObj.name + "~  start: " + blockObj.start + "  end: " + (blockObj.start + blockObj.length);
+	blockNode.innerText = blockObj.name + "~  start: " + blockObj.start + "  end: " + (blockObj.start + blockObj.length) + "  length: " + blockObj.length;
 	blockNode.setAttribute("style", "height: " + (blockObj.length * 17) + "px; background: " + blockObj.color +";");
 	blockNode.setAttribute("class", "block");
 	return blockNode;
