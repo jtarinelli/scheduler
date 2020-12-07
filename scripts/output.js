@@ -108,7 +108,6 @@ function roundRobin(jobs, quantum) {
 				job.finish = time + 1;
 				job.completed = true;
 				completedJobs += 1;
-				jobIndex = (jobIndex + 1) % queue.length;
 			}
 		}
 		
