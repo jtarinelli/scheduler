@@ -171,5 +171,6 @@ function makeBlockNode(blockObj) {
 	let blockNode = document.createElement("div");
 	blockNode.innerText = blockObj.name + "~  start: " + blockObj.start + "  end: " + (blockObj.start + blockObj.length);
 	blockNode.setAttribute("style", "height: " + (blockObj.length * 17) + "px; background: " + blockObj.color +";");
+	blockNode.setAttribute("class", "block");
 	return blockNode;
 }
