@@ -14,7 +14,7 @@ function addJob() {
 		let jobsList = document.getElementById("jobs");
 		let newJob = job1.cloneNode(true);
 		changeJobNumber(newJob, numJobs);
-		setJobValues(newJob, 0, 0, 0);
+		setJobValues(newJob, 0, 1, 0);
 		jobsList.appendChild(newJob);
 	}
 }
