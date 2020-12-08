@@ -1,13 +1,6 @@
 // functions to read in input, run the actual simulation, and generate output
 // maybe should seperate out all document.getWhatever from normal functions
 
-let ioLength = 1;
-/* to handle i/o, literally break jobs up into multiple jobs
-with the same name when they're not waiting for io???
-only problem is that it screws up generating stats 
-so maybe go back and stick jobs with the same name back together at the end
-*/
-
 // runs when submit/go button is clicked
 function submitButton() {
 	let fifoOutput = document.getElementById("fifo-output");
@@ -37,6 +30,7 @@ function readInJobs() {
 		let arrival = Number(job.children[2].value);
 		let length = Number(job.children[4].value);
 		let ioFreq = Number(job.children[6].value);
+		let ioLength = Number(job.children[8].value);
 		let color = job.getAttribute("color");
 		jobs.push({
 			name: name,
@@ -44,6 +38,7 @@ function readInJobs() {
 			arrival: arrival,
 			length, length,
 			ioFreq: ioFreq,
+			ioLength: ioLength,
 			start: -1, 
 			finish: -1,
 			runtime: 0, // not used for FIFO
@@ -71,7 +66,7 @@ function breakUpIO(jobs) {
 				subJob.length = job.ioFreq;
 				newJobs.push(subJob);
 				runtime += job.ioFreq;
-				time += job.ioFreq + ioLength;
+				time += job.ioFreq + job.ioLength;
 			}
 
 			if (runtime != job.length) {

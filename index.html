@@ -20,7 +20,6 @@
 			<ul>
 				<li>double check if new rr function is actually right</li>
 				<li>double check if I/O actually work correctly + fix stats calculations</li>
-				<li>add I/O length option</li>
 				<li>Make output look nicer, add a timeline instead of repeating numbers if possible</li>
 				<li>Implement multi level feedback queue, i guess</li>
 			</ul>
@@ -39,8 +38,10 @@
 							<input type="number" id="start-1" value="0" step="1" min="0">
 							<label for="length-1">Length</label>
 							<input type="number" id="length-1" value="1" step="1" min="1">
-							<label for="io-1">I/O Frequency</label>
-							<input type="number" id="io-1" value="0" step="1" min="0">
+							<label for="ioFreq-1">I/O Frequency</label>
+							<input type="number" id="ioFreq-1" value="0" step="1" min="0">
+							<label for="ioLength-1">I/O Length</label>
+							<input type="number" id="ioLength-1" value="0" step="1" min="0">
 							<input type="button" value="Remove Job" onclick="removeJob(1)">
 						</div>
 					</div>
