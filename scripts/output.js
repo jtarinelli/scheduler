@@ -186,6 +186,7 @@ function generateSimulation(blocks, output) {
 // calculates the average response and turnaround time and adds them to the end of the output
 function generateStats(jobs, output) {
 	output.innerHTML = ""; // controversial way to clear all children
+	//jobs = combineJobs(jobs);
 	
 	let turnaroundTotal = 0;
 	let responseTotal = 0;
@@ -203,6 +204,35 @@ function generateStats(jobs, output) {
 	averages.setAttribute("class", "stats");
 	output.appendChild(averages);
 	output.i
+}
+
+// goes through a job list that's been broken up by I/O and sticks jobs with the same name back together
+// all that actually matters is start, finish, and arrival
+function combineJobs(jobs) {
+	if (jobs.length < 2) {
+		return jobs;
+	}
+	jobs.sort((a, b) => a.name - b.name);
+	let newJobs = [];
+	
+	for (let i = 1; i < jobs.length; i++) {
+		if (jobs[i - 1].name != jobs[i].name) {
+			newJobs.push(jobs[i]);
+		} else {
+			let jobsLast = jobs[jobs.length - 1];
+			if (jobs[i].arrival < jobsLast.arrival) {
+				jobsLast.arrival = jobs[i].arrival;
+			}
+			if (jobs[i].start < jobsLast.start) {
+				jobsLast.start = jobs[i].start;
+			}
+			if (jobs[i].finish > jobsLast.finish) {
+				jobsLast.finish = jobs[i].finish;
+			}
+		}
+	}
+	
+	return newJobs;
 }
 
 // takes in a block object and returns a block node
