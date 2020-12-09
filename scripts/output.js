@@ -51,7 +51,6 @@ function readInJobs() {
 /* takes in jobs and breaks them into smaller subjobs when they're not waiting for i/o
 */
 function breakUpIO(jobs) {
-	console.log(jobs);
 	let newJobs = [];
 	for (job of jobs) {
 		if (job.ioFreq == 0 || job.ioFreq >= job.length) {
@@ -78,7 +77,6 @@ function breakUpIO(jobs) {
 			}
 		}
 	}
-	console.log(newJobs);
 	return newJobs
 }
 
@@ -126,6 +124,9 @@ function roundRobin(jobs, quantum) {
 		} else {
 			if (time % quantum == 0) {
 				jobIndex += 1;
+				time += 1;
+				// skips to next iteration of the loop because we don't know if the next job is arrived yet
+				continue; 
 			}
 			
 			jobIndex = jobIndex % queue.length;
@@ -151,7 +152,6 @@ function roundRobin(jobs, quantum) {
 		} else if (thisBlock != null) {
 			blocks.push(thisBlock);
 		}
-		
 		time += 1;
 	}
 	
@@ -181,7 +181,7 @@ function generateSimulation(blocks, output) {
 // calculates the average response and turnaround time and adds them to the end of the output
 function generateStats(jobs, output) {
 	output.innerHTML = ""; // controversial way to clear all children
-	//jobs = combineJobs(jobs);
+	jobs = combineJobs(jobs);
 	
 	let turnaroundTotal = 0;
 	let responseTotal = 0;
@@ -208,6 +208,7 @@ function combineJobs(jobs) {
 		return jobs;
 	}
 	jobs.sort((a, b) => a.name - b.name);
+	console.log(jobs);
 	let newJobs = [];
 	
 	for (let i = 1; i < jobs.length; i++) {
