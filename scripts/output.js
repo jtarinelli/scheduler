@@ -195,7 +195,6 @@ function combineJobs(jobs) {
 			newJobs.push(jobs[i]);
 		} else {
 			let newJobsLast = newJobs[newJobs.length - 1];
-			//newJobsLast.runtime += jobs[i].runtime;
 			if (jobs[i].arrival < newJobsLast.arrival) {
 				newJobsLast.arrival = jobs[i].arrival;
 			}
@@ -231,7 +230,6 @@ function generateStats(jobs, output) {
 	averages.innerHTML = "Average Turnaround Time: " + averageTurnaround + "</br>Average Response Time: " + averageResponse;
 	averages.setAttribute("class", "stats");
 	output.appendChild(averages);
-	//output.i
 }
 
 // takes in a block object and returns a block node
