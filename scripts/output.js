@@ -13,6 +13,10 @@ function submitButton() {
 	generateStats(jobs, fifoOutput);
 	generateSimulation(fifoBlocks, fifoOutput);
 	
+	// reset jobs in between
+	jobs = readInJobs();
+	jobs = breakUpIO(jobs);
+	
 	let rrBlocks = roundRobin(jobs, quantum);
 	generateStats(jobs, rrOutput);
 	generateSimulation(rrBlocks, rrOutput);
@@ -84,6 +88,7 @@ function breakUpIO(jobs) {
  * using the first in first out (FIFO) algorithm
  */
 function FIFO(jobs) {	
+	jobs = jobs.filter(job => job.length != 0);
 	jobs.sort((a, b) => a.arrival - b.arrival); // check about compatability of arrow functions
 	let time = 0;
 	let blocks = []; 
@@ -109,12 +114,12 @@ function FIFO(jobs) {
 // change something and hit go
 // maybe its just cause it takes too long idk
 function roundRobin(jobs, quantum) {
-	//jobs = jobs.filter(job => job.length != 0);
+	jobs = jobs.filter(job => job.length != 0);
 	let time = 0;
 	let completedJobs = 0;
 	let jobIndex = 0;
 	let blocks = [];
-
+	
 	while (completedJobs < jobs.length) {
 		let queue = jobs.filter(job => !job.completed && job.arrival <= time).sort((a, b) => a.arrival - b.arrival);
 		let thisBlock = null;
@@ -122,11 +127,8 @@ function roundRobin(jobs, quantum) {
 		if (queue.length == 0) {
 			thisBlock = makeBlock("Empty", "transparent", time, 1);
 		} else {
-			if (time % quantum == 0) {
+			if (time > 0 && time % quantum == 0) {
 				jobIndex += 1;
-				time += 1;
-				// skips to next iteration of the loop because we don't know if the next job is arrived yet
-				continue; 
 			}
 			
 			jobIndex = jobIndex % queue.length;
@@ -178,57 +180,58 @@ function generateSimulation(blocks, output) {
 	output.appendChild(blocksDiv);
 }
 
-// calculates the average response and turnaround time and adds them to the end of the output
-function generateStats(jobs, output) {
-	output.innerHTML = ""; // controversial way to clear all children
-	jobs = combineJobs(jobs);
-	
-	let turnaroundTotal = 0;
-	let responseTotal = 0;
-	
-	for (job of jobs) {
-		turnaroundTotal += (job.finish - job.arrival);
-		responseTotal += (job.start - job.arrival);
-	}
-	
-	let averageTurnaround = turnaroundTotal / jobs.length;
-	let averageResponse = responseTotal / jobs.length;
-	
-	let averages = document.createElement("div");
-	averages.innerHTML = "Average Turnaround Time: " + averageTurnaround + "</br>Average Response Time: " + averageResponse;
-	averages.setAttribute("class", "stats");
-	output.appendChild(averages);
-	output.i
-}
-
 // goes through a job list that's been broken up by I/O and sticks jobs with the same name back together
-// all that actually matters is start, finish, and arrival
+// preserving the first subjob's arrival and start time, and the last subjob's finish time
+// runtime isn't preserved but it doesn't matter for the purpose of calculating turnaround/response times
 function combineJobs(jobs) {
 	if (jobs.length < 2) {
 		return jobs;
 	}
 	jobs.sort((a, b) => a.name - b.name);
-	console.log(jobs);
-	let newJobs = [];
+	let newJobs = [jobs[0]];
 	
 	for (let i = 1; i < jobs.length; i++) {
 		if (jobs[i - 1].name != jobs[i].name) {
 			newJobs.push(jobs[i]);
 		} else {
-			let jobsLast = jobs[jobs.length - 1];
-			if (jobs[i].arrival < jobsLast.arrival) {
-				jobsLast.arrival = jobs[i].arrival;
+			let newJobsLast = newJobs[newJobs.length - 1];
+			//newJobsLast.runtime += jobs[i].runtime;
+			if (jobs[i].arrival < newJobsLast.arrival) {
+				newJobsLast.arrival = jobs[i].arrival;
 			}
-			if (jobs[i].start < jobsLast.start) {
-				jobsLast.start = jobs[i].start;
+			if (jobs[i].start < newJobsLast.start) {
+				newJobsLast.start = jobs[i].start;
 			}
-			if (jobs[i].finish > jobsLast.finish) {
-				jobsLast.finish = jobs[i].finish;
+			if (jobs[i].finish > newJobsLast.finish) {
+				newJobsLast.finish = jobs[i].finish;
 			}
 		}
 	}
-	
+	console.log(newJobs);
 	return newJobs;
+}
+
+// calculates the average response and turnaround time and adds them to the end of the output
+function generateStats(jobs, output) {
+	output.innerHTML = ""; // controversial way to clear all children
+	let combinedjobs = combineJobs(jobs);
+	
+	let turnaroundTotal = 0;
+	let responseTotal = 0;
+	
+	for (job of combinedjobs) {
+		turnaroundTotal += (job.finish - job.arrival);
+		responseTotal += (job.start - job.arrival);
+	}
+	
+	let averageTurnaround = turnaroundTotal / combinedjobs.length;
+	let averageResponse = responseTotal / combinedjobs.length;
+	
+	let averages = document.createElement("div");
+	averages.innerHTML = "Average Turnaround Time: " + averageTurnaround + "</br>Average Response Time: " + averageResponse;
+	averages.setAttribute("class", "stats");
+	output.appendChild(averages);
+	//output.i
 }
 
 // takes in a block object and returns a block node
