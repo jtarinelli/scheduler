@@ -8,11 +8,11 @@ function submitButton() {
 	let quantum = Number(document.getElementById("quantum").value); 
 	let jobs = readInJobs();
 	//jobs = breakUpIO(jobs);
-	/*
+
 	let fifoBlocks = FIFO(jobs);
 	generateStats(jobs, fifoOutput);
 	generateSimulation(fifoBlocks, fifoOutput);
-	*/
+
 	// reset jobs in between
 	jobs = readInJobs();
 	//jobs = breakUpIO(jobs);
@@ -49,7 +49,6 @@ function readInJobs() {
 			completed: false // not used for FIFO
 		});
 	}
-	console.log(jobs);
 	return jobs;
 }
 
@@ -141,14 +140,11 @@ function roundRobin(jobs, quantum) {
 			
 			// handle i/o break
 			// add a new job to the jobs array that arrives at time + job.ioLength
-
-			if (job.ioFreq != 0 && job.runtime != 0 && (job.runtime % job.ioFreq) == 0) {
-				console.log(job, job.runtime, job.ioFreq, job.runtime % job.ioFreq);
-
+			if (job.ioFreq != 0 && job.start != -1 && (job.runtime % job.ioFreq) == 0) {
 				let newJob = {};
-				Object.assign(newJob, job);
+				Object.assign(newJob, job); // copy job to newJob
 				newJob.arrival = time + job.ioLength;
-				newJob.runtime += 1;
+				//newJob.runtime += 1;
 				newJob.start = -1;
 				newJob.finish = -1;
 				jobs.push(newJob);
@@ -156,7 +152,6 @@ function roundRobin(jobs, quantum) {
 				job.finish = time;
 				job.completed = true;
 				completedJobs += 1;
-				queueIndex += 1;
 				continue; // skip back to top of loop
 			}
 
