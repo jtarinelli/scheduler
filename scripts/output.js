@@ -122,8 +122,8 @@ function roundRobin(jobs, quantum) {
 	let queueIndex = 0;
 	let blocks = [];
 	
-	for (let i=0; i<10; i++) {
-	//while (completedJobs < jobs.length) {
+	//for (let i=0; i<10; i++) {
+	while (completedJobs < jobs.length) {
 		let queue = jobs.filter(job => !job.completed && job.arrival <= time).sort((a, b) => a.arrival - b.arrival);
 		let thisBlock = null;
 		console.log("queue", queue);
@@ -141,33 +141,26 @@ function roundRobin(jobs, quantum) {
 			
 			// handle i/o break
 			// add a new job to the jobs array that arrives at time + job.ioLength
-			/*
+
 			if (job.ioFreq != 0 && job.runtime != 0 && (job.runtime % job.ioFreq) == 0) {
 				console.log(job, job.runtime, job.ioFreq, job.runtime % job.ioFreq);
 
-				//newJob.arrival = time + job.ioLength;
-				jobs.push({
-					name: job.name,
-					color: job.color,
-					arrival: time + 1 + job.ioLength,
-					length: job.length,
-					ioFreq: job.ioFreq,
-					ioLength: job.ioLength,
-					start: -1, 
-					finish: -1,
-					runtime: job.runtime, 
-					completed: false
-				});
+				let newJob = {};
+				Object.assign(newJob, job);
+				newJob.arrival = time + job.ioLength;
+				newJob.runtime += 1;
+				newJob.start = -1;
+				newJob.finish = -1;
+				jobs.push(newJob);
 				
 				job.finish = time;
 				job.completed = true;
 				completedJobs += 1;
 				queueIndex += 1;
-				//continue;
+				continue; // skip back to top of loop
 			}
-			*/ 
 
-			if (job.runtime == 0) {
+			if (job.start == -1) {
 				job.start = time;
 			}
 			
