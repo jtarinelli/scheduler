@@ -57,7 +57,7 @@ function readInJobs() {
 function breakUpIO(jobs) {
 	let newJobs = [];
 	for (job of jobs) {
-		if (job.ioFreq == 0 || job.ioFreq >= job.length) {
+		if (job.ioFreq == 0 || job.ioLength == 0 || job.ioFreq >= job.length) {
 			newJobs.push(job);
 		} else {
 			let runtime = 0;

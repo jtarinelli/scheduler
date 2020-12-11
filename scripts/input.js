@@ -40,7 +40,11 @@ function changeJobNumber(job, number) {
 	job.children[1].setAttribute("for","start-" + number);
 	job.children[4].id = "length-" + number;
 	job.children[3].setAttribute("for","length-" + number);
-	job.children[5].setAttribute("onclick","removeJob(" + number + ")");
+	job.children[6].id = "ioFreq-" + number;
+	job.children[5].setAttribute("for","ioFreq-" + number);
+	job.children[8].id = "ioLength-" + number;
+	job.children[7].setAttribute("for","ioLength-" + number);
+	job.children[9].setAttribute("onclick","removeJob(" + number + ")");
 }
 
 // sets the arrival time and length of a job
