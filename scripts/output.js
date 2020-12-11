@@ -7,7 +7,6 @@ function submitButton() {
 	let rrOutput = document.getElementById("rr-output");
 	let quantum = Number(document.getElementById("quantum").value); 
 	let jobs = readInJobs();
-	jobs = breakUpIO(jobs);
 
 	let fifoBlocks = FIFO(jobs);
 	generateStats(jobs, fifoOutput);
@@ -51,38 +50,6 @@ function readInJobs() {
 	return jobs;
 }
 
-/* takes in jobs and breaks them into smaller subjobs when they're not waiting for i/o
-*/
-function breakUpIO(jobs) {
-	let newJobs = [];
-	for (job of jobs) {
-		if (job.ioFreq == 0 || job.ioLength == 0 || job.ioFreq >= job.length) {
-			newJobs.push(job);
-		} else {
-			let runtime = 0;
-			let time = job.arrival;
-			for (let i = 0; i < Math.floor(job.length / job.ioFreq); i++) {
-				let subJob = {};
-				Object.assign(subJob, job); // copies values of job to subJob (check compatability) 
-				subJob.arrival = time;
-				subJob.length = job.ioFreq;
-				newJobs.push(subJob);
-				runtime += job.ioFreq;
-				time += job.ioFreq + job.ioLength;
-			}
-
-			if (runtime != job.length) {
-				let subJob = {};
-				Object.assign(subJob, job);
-				subJob.arrival = time;
-				subJob.length = job.length - runtime;
-				newJobs.push(subJob);
-			}
-		}
-	}
-	return newJobs
-}
-
 /* reads in a list of jobs and returns a list of blocks (as in blocks of time when each job runs)
  * using the first in first out (FIFO) algorithm
  */
@@ -108,7 +75,6 @@ function FIFO(jobs) {
 				let newJob = {};
 				Object.assign(newJob, job); // copy job to newJob
 				newJob.arrival = time + job.ioLength;
-				//newJob.runtime += 1;
 				newJob.start = -1;
 				newJob.finish = -1;
 				jobs.push(newJob);
