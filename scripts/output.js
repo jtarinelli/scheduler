@@ -230,18 +230,19 @@ function combineJobs(jobs) {
 // calculates the average response and turnaround time and adds them to the end of the output
 function generateStats(jobs, output) {
 	output.innerHTML = ""; // controversial way to clear all children
-	let combinedjobs = combineJobs(jobs);
+	let combinedJobs = combineJobs(jobs);
+	console.log(combinedJobs);
 	
 	let turnaroundTotal = 0;
 	let responseTotal = 0;
 	
-	for (job of combinedjobs) {
+	for (job of combinedJobs) {
 		turnaroundTotal += (job.finish - job.arrival);
 		responseTotal += (job.start - job.arrival);
 	}
 	
-	let averageTurnaround = turnaroundTotal / combinedjobs.length;
-	let averageResponse = responseTotal / combinedjobs.length;
+	let averageTurnaround = turnaroundTotal / combinedJobs.length;
+	let averageResponse = responseTotal / combinedJobs.length;
 	
 	let averages = document.createElement("div");
 	averages.innerHTML = "Average Turnaround Time: " + averageTurnaround + "</br>Average Response Time: " + averageResponse;
