@@ -7,15 +7,15 @@ function submitButton() {
 	let rrOutput = document.getElementById("rr-output");
 	let quantum = Number(document.getElementById("quantum").value); 
 	let jobs = readInJobs();
-	jobs = breakUpIO(jobs);
-	
+	//jobs = breakUpIO(jobs);
+	/*
 	let fifoBlocks = FIFO(jobs);
 	generateStats(jobs, fifoOutput);
 	generateSimulation(fifoBlocks, fifoOutput);
-	
+	*/
 	// reset jobs in between
 	jobs = readInJobs();
-	jobs = breakUpIO(jobs);
+	//jobs = breakUpIO(jobs);
 	
 	let rrBlocks = roundRobin(jobs, quantum);
 	generateStats(jobs, rrOutput);
@@ -40,7 +40,7 @@ function readInJobs() {
 			name: name,
 			color: color,
 			arrival: arrival,
-			length, length,
+			length:	length,
 			ioFreq: ioFreq,
 			ioLength: ioLength,
 			start: -1, 
@@ -49,6 +49,7 @@ function readInJobs() {
 			completed: false // not used for FIFO
 		});
 	}
+	console.log(jobs);
 	return jobs;
 }
 
@@ -115,25 +116,57 @@ function FIFO(jobs) {
 // maybe its just cause it takes too long idk
 function roundRobin(jobs, quantum) {
 	jobs = jobs.filter(job => job.length != 0);
+	console.log(jobs); // for whatever reason jobs has WAY more jobs than there should be and idk why cause i'm not calling breakupIO?
 	let time = 0;
 	let completedJobs = 0;
-	let jobIndex = 0;
+	let queueIndex = 0;
 	let blocks = [];
 	
-	while (completedJobs < jobs.length) {
+	for (let i=0; i<10; i++) {
+	//while (completedJobs < jobs.length) {
 		let queue = jobs.filter(job => !job.completed && job.arrival <= time).sort((a, b) => a.arrival - b.arrival);
 		let thisBlock = null;
+		console.log("queue", queue);
+		console.log(time, jobs);
 		
 		if (queue.length == 0) {
 			thisBlock = makeBlock("Empty", "transparent", time, 1);
 		} else {
 			if (time > 0 && time % quantum == 0) {
-				jobIndex += 1;
+				queueIndex += 1;
+			} 
+			
+			queueIndex = queueIndex % queue.length;
+			let job = queue[queueIndex];
+			
+			// handle i/o break
+			// add a new job to the jobs array that arrives at time + job.ioLength
+			/*
+			if (job.ioFreq != 0 && job.runtime != 0 && (job.runtime % job.ioFreq) == 0) {
+				console.log(job, job.runtime, job.ioFreq, job.runtime % job.ioFreq);
+
+				//newJob.arrival = time + job.ioLength;
+				jobs.push({
+					name: job.name,
+					color: job.color,
+					arrival: time + 1 + job.ioLength,
+					length: job.length,
+					ioFreq: job.ioFreq,
+					ioLength: job.ioLength,
+					start: -1, 
+					finish: -1,
+					runtime: job.runtime, 
+					completed: false
+				});
+				
+				job.finish = time;
+				job.completed = true;
+				completedJobs += 1;
+				queueIndex += 1;
+				//continue;
 			}
-			
-			jobIndex = jobIndex % queue.length;
-			let job = queue[jobIndex];
-			
+			*/ 
+
 			if (job.runtime == 0) {
 				job.start = time;
 			}
@@ -180,9 +213,10 @@ function generateSimulation(blocks, output) {
 	output.appendChild(blocksDiv);
 }
 
-// goes through a job list that's been broken up by I/O and sticks jobs with the same name back together
-// preserving the first subjob's arrival and start time, and the last subjob's finish time
-// runtime isn't preserved but it doesn't matter for the purpose of calculating turnaround/response times
+/* goes through a job list that's been broken up by I/O and sticks jobs with the same name back together
+ * preserving the first subjob's arrival and start time, and the last subjob's finish time
+ * runtime isn't preserved but it doesn't matter for the purpose of calculating turnaround/response times
+ */
 function combineJobs(jobs) {
 	if (jobs.length < 2) {
 		return jobs;
