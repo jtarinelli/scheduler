@@ -86,27 +86,63 @@ function breakUpIO(jobs) {
 /* reads in a list of jobs and returns a list of blocks (as in blocks of time when each job runs)
  * using the first in first out (FIFO) algorithm
  */
-function FIFO(jobs) {	
+function FIFO(jobs) {
 	jobs = jobs.filter(job => job.length != 0);
-	jobs.sort((a, b) => a.arrival - b.arrival); // check about compatability of arrow functions
 	let time = 0;
-	let blocks = []; 
+	let completedJobs = 0;
+	let queueIndex = 0;
+	let blocks = [];
 	
-	for (job of jobs) {
-		// check for gaps between jobs, or between time 0 and the first job
-		if ((blocks.length == 0 && job.arrival != 0) || (blocks.length > 0 && (blocks[blocks.length-1].start + blocks[blocks.length-1].length) < job.arrival)) {
-			blocks.push(makeBlock("Empty", "transparent", time, job.arrival - time));
-			time = job.arrival;
-		}
+	while (completedJobs < jobs.length) {
+		let queue = jobs.filter(job => !job.completed && job.arrival <= time).sort((a, b) => a.arrival - b.arrival);
+		let thisBlock = null;
+		
+		if (queue.length == 0) {
+			thisBlock = makeBlock("Empty", "transparent", time, 1);
+		} else {			
+			let job = queue[0];
+			
+			// handle i/o break
+			// add a new job to the jobs array that arrives at time + job.ioLength
+			if (job.ioFreq != 0 && job.start != -1 && (job.runtime % job.ioFreq) == 0) {
+				let newJob = {};
+				Object.assign(newJob, job); // copy job to newJob
+				newJob.arrival = time + job.ioLength;
+				//newJob.runtime += 1;
+				newJob.start = -1;
+				newJob.finish = -1;
+				jobs.push(newJob);
+				
+				job.finish = time;
+				job.completed = true;
+				completedJobs += 1;
+				continue; // skip back to top of loop
+			}
 
-		// run the whole job
-		job.start = time;
-		blocks.push(makeBlock(job.name, job.color, time, job.length));
-		time += job.length;
-		job.finish = time;
+			if (job.start == -1) {
+				job.start = time;
+			}
+			
+			job.runtime += 1;
+			thisBlock = makeBlock(job.name, job.color, time, 1);
+			
+			if (job.runtime >= job.length) {
+				job.finish = time + 1;
+				job.completed = true;
+				completedJobs += 1;
+			}
+		}
+		
+		// combine this block with the previous one if possible
+		if (thisBlock != null && blocks.length > 0 && thisBlock.name == blocks[blocks.length-1].name) {
+			blocks[blocks.length - 1].length += 1;
+		} else if (thisBlock != null) {
+			blocks.push(thisBlock);
+		}
+		time += 1;
 	}
 	
-	return blocks;
+	return blocks; 
 }
 
 // i think this works except sometimes rr doesn't update and fifo does when you 
@@ -139,7 +175,6 @@ function roundRobin(jobs, quantum) {
 				let newJob = {};
 				Object.assign(newJob, job); // copy job to newJob
 				newJob.arrival = time + job.ioLength;
-				//newJob.runtime += 1;
 				newJob.start = -1;
 				newJob.finish = -1;
 				jobs.push(newJob);
