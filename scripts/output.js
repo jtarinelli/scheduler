@@ -1,5 +1,4 @@
 // functions to read in input, run the actual simulation, and generate output
-// maybe should seperate out all document.getWhatever from normal functions
 
 // runs when submit/go button is clicked
 function submitButton() {
@@ -47,6 +46,7 @@ function readInJobs() {
 			completed: false // not used for FIFO
 		});
 	}
+
 	return jobs;
 }
 
@@ -54,7 +54,6 @@ function readInJobs() {
  * using the first in first out (FIFO) algorithm
  */
 function FIFO(jobs) {
-	jobs = jobs.filter(job => job.length != 0);
 	let time = 0;
 	let completedJobs = 0;
 	let queueIndex = 0;
@@ -111,11 +110,9 @@ function FIFO(jobs) {
 	return blocks; 
 }
 
-// i think this works except sometimes rr doesn't update and fifo does when you 
-// change something and hit go
-// maybe its just cause it takes too long idk
+/* reads in an array of jobs and returns an array of blocks (of runtime) according to the round robin algorithm
+*/
 function roundRobin(jobs, quantum) {
-	jobs = jobs.filter(job => job.length != 0);
 	let time = 0;
 	let completedJobs = 0;
 	let queueIndex = 0;
@@ -173,9 +170,9 @@ function roundRobin(jobs, quantum) {
 		}
 		time += 1;
 	}
-	
+
 	return blocks; 
- }
+}
  
 function makeBlock(name, color, start, length) {
 	return {
@@ -205,6 +202,7 @@ function combineJobs(jobs) {
 	if (jobs.length < 2) {
 		return jobs;
 	}
+
 	jobs.sort((a, b) => a.name - b.name);
 	let newJobs = [jobs[0]];
 	
@@ -224,7 +222,7 @@ function combineJobs(jobs) {
 			}
 		}
 	}
-	console.log(newJobs);
+
 	return newJobs;
 }
 
@@ -232,7 +230,6 @@ function combineJobs(jobs) {
 function generateStats(jobs, output) {
 	output.innerHTML = ""; // controversial way to clear all children
 	let combinedJobs = combineJobs(jobs);
-	console.log(combinedJobs);
 	
 	let turnaroundTotal = 0;
 	let responseTotal = 0;
