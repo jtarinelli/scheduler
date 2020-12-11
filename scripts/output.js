@@ -7,7 +7,7 @@ function submitButton() {
 	let rrOutput = document.getElementById("rr-output");
 	let quantum = Number(document.getElementById("quantum").value); 
 	let jobs = readInJobs();
-	//jobs = breakUpIO(jobs);
+	jobs = breakUpIO(jobs);
 
 	let fifoBlocks = FIFO(jobs);
 	generateStats(jobs, fifoOutput);
@@ -15,7 +15,6 @@ function submitButton() {
 
 	// reset jobs in between
 	jobs = readInJobs();
-	//jobs = breakUpIO(jobs);
 	
 	let rrBlocks = roundRobin(jobs, quantum);
 	generateStats(jobs, rrOutput);
@@ -115,18 +114,14 @@ function FIFO(jobs) {
 // maybe its just cause it takes too long idk
 function roundRobin(jobs, quantum) {
 	jobs = jobs.filter(job => job.length != 0);
-	console.log(jobs); // for whatever reason jobs has WAY more jobs than there should be and idk why cause i'm not calling breakupIO?
 	let time = 0;
 	let completedJobs = 0;
 	let queueIndex = 0;
 	let blocks = [];
 	
-	//for (let i=0; i<10; i++) {
 	while (completedJobs < jobs.length) {
 		let queue = jobs.filter(job => !job.completed && job.arrival <= time).sort((a, b) => a.arrival - b.arrival);
 		let thisBlock = null;
-		console.log("queue", queue);
-		console.log(time, jobs);
 		
 		if (queue.length == 0) {
 			thisBlock = makeBlock("Empty", "transparent", time, 1);
