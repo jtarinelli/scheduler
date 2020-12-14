@@ -1,12 +1,20 @@
-// functions to read in input, run the actual simulation, and generate output
+// Functions to read in input, run the actual simulation, and generate output
 
-// runs when submit/go button is clicked
+/* Runs when submit/go button is clicked
+ */
 function submitButton() {
 	let fifoOutput = document.getElementById("fifo-output");
 	let rrOutput = document.getElementById("rr-output");
+	
+	// clears outputs
+	fifoOutput.innerHTML = "";
+	rrOutput.innerHTML = "";
+	
+	// read in inputs
 	let quantum = Number(document.getElementById("quantum").value); 
 	let jobs = readInJobs();
 
+	// run FIFO simulation + stats
 	let fifoBlocks = FIFO(jobs);
 	generateStats(jobs, fifoOutput);
 	generateSimulation(fifoBlocks, fifoOutput);
@@ -14,13 +22,13 @@ function submitButton() {
 	// reset jobs in between
 	jobs = readInJobs();
 	
+	// run RR simulation + stats
 	let rrBlocks = roundRobin(jobs, quantum);
 	generateStats(jobs, rrOutput);
 	generateSimulation(rrBlocks, rrOutput);
 }
 
-/* reads in input from the form and returns a list of job objects
- * maybe want to take out a function that takes in job node and returns job object
+/* Reads in input from the form and returns a list of job objects
  */
 function readInJobs() {
 	let jobsList = document.getElementById("jobs");
@@ -50,7 +58,7 @@ function readInJobs() {
 	return jobs;
 }
 
-/* reads in a list of jobs and returns a list of blocks (as in blocks of time when each job runs)
+/* Takes in a list of jobs and returns a list of blocks (as in blocks of runtime)
  * using the first in first out (FIFO) algorithm
  */
 function FIFO(jobs) {
@@ -60,6 +68,7 @@ function FIFO(jobs) {
 	let blocks = [];
 	
 	while (completedJobs < jobs.length) {
+		// list of jobs that have arrived and aren't complete
 		let queue = jobs.filter(job => !job.completed && job.arrival <= time).sort((a, b) => a.arrival - b.arrival);
 		let thisBlock = null;
 		
@@ -110,8 +119,9 @@ function FIFO(jobs) {
 	return blocks; 
 }
 
-/* reads in an array of jobs and returns an array of blocks (of runtime) according to the round robin algorithm
-*/
+/* Takes in an array of jobs and the length of a timeslice 
+ * and returns an array of blocks of runtime according to the round robin algorithm
+ */
 function roundRobin(jobs, quantum) {
 	let time = 0;
 	let completedJobs = 0;
@@ -119,16 +129,19 @@ function roundRobin(jobs, quantum) {
 	let blocks = [];
 	
 	while (completedJobs < jobs.length) {
+		// list of jobs that have arrived and aren't complete
 		let queue = jobs.filter(job => !job.completed && job.arrival <= time).sort((a, b) => a.arrival - b.arrival);
 		let thisBlock = null;
 		
 		if (queue.length == 0) {
 			thisBlock = makeBlock("Empty", "transparent", time, 1);
 		} else {
+			// if a timeslice has been completed, move onto next job in the queue
 			if (time > 0 && time % quantum == 0) {
 				queueIndex += 1;
 			} 
 			
+			// make sure queueIndex is within the length of the current queue
 			queueIndex = queueIndex % queue.length;
 			let job = queue[queueIndex];
 			
@@ -174,6 +187,8 @@ function roundRobin(jobs, quantum) {
 	return blocks; 
 }
  
+/* Makes a block (of runtime) object
+ */
 function makeBlock(name, color, start, length) {
 	return {
 		name: name,
@@ -194,15 +209,16 @@ function generateSimulation(blocks, output) {
 	output.appendChild(blocksDiv);
 }
 
-/* goes through a job list that's been broken up by I/O and sticks jobs with the same name back together
- * preserving the first subjob's arrival and start time, and the last subjob's finish time
- * runtime isn't preserved but it doesn't matter for the purpose of calculating turnaround/response times
+/* Goes through a list of jobs and sticks subjobs split up by I/O with the same name back together,
+ * preserving the first subjob's arrival and start time, and the last subjob's finish time.
+ * Runtime isn't preserved but it doesn't matter for the purpose of calculating turnaround/response times.
  */
 function combineJobs(jobs) {
 	if (jobs.length < 2) {
 		return jobs;
 	}
 
+	// groups jobs with the same name together
 	jobs.sort((a, b) => a.name - b.name);
 	let newJobs = [jobs[0]];
 	
@@ -226,9 +242,11 @@ function combineJobs(jobs) {
 	return newJobs;
 }
 
-// calculates the average response and turnaround time and adds them to the end of the output
+/* Calculates the average response and turnaround time for a list of jobs
+ * and adds them to the end of the output. 
+ */
 function generateStats(jobs, output) {
-	output.innerHTML = ""; // controversial way to clear all children
+	 // clears the output
 	let combinedJobs = combineJobs(jobs);
 	
 	let turnaroundTotal = 0;
@@ -248,7 +266,8 @@ function generateStats(jobs, output) {
 	output.appendChild(averages);
 }
 
-// takes in a block object and returns a block node
+/* Takes in a block object and returns a block node
+ */ 
 function makeBlockNode(blockObj) {
 	let blockNode = document.createElement("div");
 	blockNode.innerText = blockObj.name + "~  start: " + blockObj.start + "  end: " + (blockObj.start + blockObj.length) + "  length: " + blockObj.length;
