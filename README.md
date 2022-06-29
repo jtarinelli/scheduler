@@ -1,3 +1,3 @@
 # scheduler
-Final project for Operating Systems. Simulate and compare 2 different methods of processor scheduling.
-https://jtarinelli.github.io/scheduler/ 
+Final project for Operating Systems. A webpage that simulates the first in first out (FIFO) scheduling method to the round robin (RR) method given the same set of processes. FIFO runs jobs to completion in order of arrival, while RR will interrupt the current running job at regular intervals (set with Quantum Length) to give the processer up to another job. Compare the performance of each method based on turnaround time (the time between a job entering the queue and its completion) and response time (the time between a job producing its first response, assumed to be right when it starts running, and its completion).
+Find it here: https://jtarinelli.github.io/scheduler/ 
